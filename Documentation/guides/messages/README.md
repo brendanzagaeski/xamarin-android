@@ -47,6 +47,7 @@
 + [XA1000](xa1000.md): There was an problem parsing {file}. This is likely due to incomplete or invalid xml.
 + [XA1001](xa1001.md): AndroidResgen: Warning while updating Resource XML '{filename}': {Message}
 + [XA1002](xa1002.md): We found a matching key '{Key}' for '{Item}'. But the casing was incorrect. Please correct the casing
++ [XA1003](xa1003.md): Attempting naive type name fixup for element with ID '{id}' and type '{managedType}'
 
 ### XA2xxx Linker
 
@@ -54,6 +55,8 @@
 
 ### XA4xxx Code Generation
 
++ [XA4214](xa4214.md): Duplicate managed type found! Mappings between managed types and Java types must be unique. First Type: '{0}'; Second Type: '{1}'.
++ [XA4215](xa4215.md): Duplicate Java type found! Mappings between managed types and Java types must be unique. First Type: '{0}'; Second Type: '{1}'.
 + [XA4301](xa4301.md): : Apk already contains the item `xxx`.
 
 ### XA5xxx GCC and toolchain

@@ -175,20 +175,23 @@ namespace Xamarin.Android.Tasks
 
 				TypeDefinition conflict;
 				if (managed.TryGetValue (managedKey, out conflict)) {
-					Log.LogWarning (
+					Log.LogCodedWarning (
+							"XA4214",
 							"Duplicate managed type found! Mappings between managed types and Java types must be unique. " +
 							"First Type: '{0}'; Second Type: '{1}'.",
 							conflict.GetAssemblyQualifiedName (),
 							type.GetAssemblyQualifiedName ());
-					Log.LogWarning (
+					Log.LogCodedWarning (
+							"XA4214",
 							"References to the type '{0}' will refer to '{1}'.",
 							managedKey, conflict.GetAssemblyQualifiedName ());
 					continue;
 				}
 				if (java.TryGetValue (javaKey, out conflict)) {
-					Log.LogError (
+					Log.LogCodedError (
+							"XA4215",
 							"Duplicate Java type found! Mappings between managed types and Java types must be unique. " +
-							"First Type: '{0}'; Second Type: '{1}'",
+							"First Type: '{0}'; Second Type: '{1}'.",
 							conflict.GetAssemblyQualifiedName (),
 							type.GetAssemblyQualifiedName ());
 					keep_going = false;
