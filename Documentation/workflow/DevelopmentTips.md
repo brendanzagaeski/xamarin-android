@@ -52,8 +52,8 @@ application's data directory:
       adb shell run-as Mono.Android_Tests cp /data/local/tmp/mscorlib.dll \
         /data/data/Mono.Android_Tests/files/.__override__/
 
-This is for example how the `lldb` debugger launcher in Android Studio and the
-Android `gdb` debugger launcher that's integrated into Visual Studio
+This is for example how the LLDB debugger launcher in Android Studio and the
+Android GDB debugger launcher that's integrated into Visual Studio
 [MIEngine][miengine] add the `lldb-server` and `gdbserver` executables to the
 application's data directory.  They actually use a slightly different method to
 perform the final copying step:
@@ -68,7 +68,105 @@ it on some particular device.
 
 [miengine]: https://github.com/microsoft/MIEngine/
 
-## Attaching `gdb` by hand
+## Attaching LLDB using Android Studio
+
+ 1. Open the signed APK for the application in Android Studio via **Profile or
+    debug APK** on the start window or the **File > Profile or Debug APK** menu
+    item.
+ 2. Start the app, for example by launching it with or without managed debugging
+    from Visual Studio, or by tapping the app on the device.
+ 3. Select **Run > Attach Debugger to Android Process** (at the bottom of the
+    menu) in Android Studio.
+ 4. Set the **Debugger** to **Native**, select the running app, and click
+    **OK**.
+ 5. Depending on the scenario you are debugging, LLDB might break on some of
+    the runtime signals that Mono uses internally.  If it does, you can set it
+    to continue through those in the **View > Tool Windows > Debug** window,
+    under the **Debugger \[tab] > LLDB \[tab\]** command prompt.
+
+        (lldb) process handle -p true -n true -s false SIGXCPU SIG33 SIG35 SIGPWR SIGTTIN SIGTTOU SIGSYS
+
+## Adding debug symbols for the default `libmonosgen-2.0`
+
+ 1. Find the Xamarin.Android version you are debugging on
+    <https://github.com/xamarin/xamarin-android/tags>, and click that version to
+    view the release information.
+
+ 2. Click the link for the corresponding open-source build under the **OSS
+    core** section of the release information.
+
+ 3. Navigate to the **Azure Artifacts** from the left sidebar, and download the
+    `xamarin-android/xamarin-android/bin/Release/bundle*.zip` file.
+
+ 4. Extract the `libmonosgen-2.0.d.so` files from the bundle.  For example, run:
+
+        $ unzip bundle*.zip '*libmonosgen-2.0.d.so'
+
+ 5. Add the appropriate architecture of `libmonosgen-2.0` into LLDB, using a
+    command similar to:
+
+        (lldb) target modules add ~/Downloads/lib/xamarin.android/xbuild/Xamarin/Android/lib/armeabi-v7a/libmonosgen-2.0.d.so
+
+ 6. Find the current in-memory address of the `.text` section of the shared
+    runtime version of `libmonosgen-2.0`.  For example, for a 32-bit app, run
+    the following command:
+
+        (lldb) target modules dump sections libmonosgen-32bit-2.0.so
+
+    Look for the row of the table that shows "code" as the "Type":
+
+        SectID     Type             Load Address                             Perm File Off.  File Size  Flags      Section Name
+        ---------- ---------------- ---------------------------------------  ---- ---------- ---------- ---------- ----------------------------
+        0x0000000d code             [0x00000000a39e4c90-0x00000000a3cb51ec)  r-x  0x0001ec90 0x002d055c 0x00000006 libmonosgen-32bit-2.0.so..text
+
+ 7. Now load the full `libmonosgen-2.0.d.so` using the same starting address for
+    the `.text` section:
+
+        (lldb) target modules load -f libmonosgen-2.0.d.so .text 0x00000000a39e4c90
+
+## Using a custom `libmonosgen-2.0`
+
+### Option 1: Use the `.__override__` update directory
+
+ 1. Push the new `libmonosgen-2.0` into the application's update directory:
+
+        $ adb push libmonosgen-2.0.so \
+            /data/local/tmp/ &&
+          adb shell run-as Mono.Android_Tests cp /data/local/tmp/libmonosgen-2.0.so \
+            /data/data/Mono.Android_Tests/files/.__override__/
+
+ 2. In this case, LLDB shows the in-memory address of the whole file instead of
+    the individual sections.  For example, run:
+
+        (lldb) target modules dump sections libmonosgen-2.0.so
+
+    And this time, look at just the table header:
+
+        Sections for '/data/data/Mono.Android_Tests/files/.__override__/libmonosgen-2.0.so(0x00000000a39c6000)' (arm):
+          SectID     Type             Load Address                             Perm File Off.  File Size  Flags      Section Name
+          ---------- ---------------- ---------------------------------------  ---- ---------- ---------- ---------- ----------------------------
+
+ 3. Re-load your custom `libmonosgen-2.0` into LLDB.  (It seems LLDB does not
+    automatically handle downloading the library and loading the symbols from it
+    when the library is located in the `.__override__` directory.)  Note that
+    you will need to use a different "dummy" file name for this step to avoid a
+    conflict with the module that is already loaded.  So the LLDB command might
+    look similar to:
+
+        (lldb) target modules add ~/Desktop/libmonosgen-2.0.so-copy
+
+ 4. Now load the `libmonosgen-2.0.so-copy`, this time providing a `-s` "slide"
+    option to indicate the whole file offset:
+
+        (lldb) target modules load -f libmonosgen-2.0.d.so -s 0x00000000a39c6000
+
+## Attaching GDB by hand
+
+These steps are generally considered deprecated in favor of LLDB as of
+[#1021][pull-1021], but they might be helpful for quick testing if (a) LLDB
+shows an unexpected behavior, (b) you already have the Android NDK installed, or
+(c) a customer has the Android NDK installed and prefers not to install Android
+Studio or the command line LLDB tools.
 
  1. Add the appropriate architecture of `gdbserver` to the application's data
     directory.  For example, if debugging an arm64-v8a app:
@@ -115,6 +213,42 @@ it on some particular device.
 
         $ ~/Library/Developer/Xamarin/android-sdk-macosx/ndk-bundle/prebuilt/darwin-x86_64/bin/gdb
 
-    And attach to the local host port:
+    And attach to the local host TCP port:
 
         (gdb) target remote :9999
+
+[pull-1021]: https://github.com/xamarin/xamarin-android/pull/1021
+
+### Comparison to the `<_Gdb/>` MSBuild target
+
+These steps use a Unix domain socket rather than a TCP port to match what the
+`ndk-gdb` script from the Android NDK and the Android Studio LLDB connection
+steps do.  The advantage of the Unix domain socket is that it works regardless
+of whether the app has the `INTERET` permission enabled.  (This isn't too
+important for Xamarin.Android apps because Xamarin.Android apps have the
+`INTERNET` permission enabled by default in the Debug configuration to enable
+the managed debugger connection.)
+
+The old `<_Gdb/>` MSBuild target includes a few refinements beyond these manual
+steps.  It pre-downloads the `app_process*` executable and system libraries from
+the device to a local `gdb-symbols` directory, and it adds the native libraries
+from the shared runtime (if applicable) and the project's APK to that directory.
+Then it runs `gdb` commands similar to the following before attaching to the
+app:
+
+    set solib-search-path ./gdb-symbols
+    file ./gdb-symbol/app_process
+
+At least on modern devices, with the recent versions of `gdb` and `gdbserver`,
+`gdb` can take care of these steps automatically after the connection, but
+creating the local directory beforehand still saves the time of downloading all
+the files.
+
+The `<_Gdb/>` target also a `gdb` command to ignore signals that the Mono
+runtime uses internally:
+
+    handle SIGXCPU SIG33 SIG35 SIGPWR SIGTTIN SIGTTOU SIGSYS nostop noprint
+
+The `<_Gdb/>` target still works to set up the `gdb-symbols` directory and the
+`gdb-symbols/gdb.env` file, but recent versions of Xamarin.Android no longer pay
+attention to the `debug.
