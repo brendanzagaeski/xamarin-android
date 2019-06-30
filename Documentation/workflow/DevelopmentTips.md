@@ -52,11 +52,10 @@ application's data directory:
       adb shell run-as Mono.Android_Tests cp /data/local/tmp/mscorlib.dll \
         /data/data/Mono.Android_Tests/files/.__override__/
 
-This is for example how the LLDB debugger launcher in Android Studio and the
-Android GDB debugger launcher that's integrated into Visual Studio
-[MIEngine][miengine] add the `lldb-server` and `gdbserver` executables to the
-application's data directory.  They actually use a slightly different method to
-perform the final copying step:
+This is also how the LLDB debugger launcher in Android Studio and the Android
+GDB debugger launcher in Visual Studio [MIEngine][miengine] upload the
+`lldb-server` and `gdbserver` executables.  They actually use a slightly
+different command for the last step:
 
     $ adb shell "cat /data/local/tmp/mscorlib.dll | \
         run-as Mono.Android_Tests sh -c \
@@ -64,27 +63,64 @@ perform the final copying step:
 
 This `cat` approach might be useful if you discover that the `cp` command does
 not have permission to read the `/data/local/tmp/mscorlib.dll` file when you try
-it on some particular device.
+it on a particular device.
 
 [miengine]: https://github.com/microsoft/MIEngine/
 
 ## Attaching LLDB using Android Studio
 
- 1. Open the signed APK for the application in Android Studio via **Profile or
-    debug APK** on the start window or the **File > Profile or Debug APK** menu
-    item.
- 2. Start the app, for example by launching it with or without managed debugging
+ 1. Install [Android Studio][android-studio].  If you already have an Android
+    SDK installation that you're using with Xamarin.Android, you can click
+    **Cancel** on the **Android Studio Setup Wizard** when you launch Android
+    Studio.
+
+ 2. Open the signed debuggable APK for the application in Android Studio via
+    **Profile or debug APK** on the start window or the **File > Profile or
+    Debug APK** menu item.
+
+    ![Profile or debug in the Android Studio start window](../../images/android-studio-attach-debugger.png)
+
+ 3. If you skipped the **Android Studio Setup Wizard**, navigate to **File >
+    Project Structure > Modules > Mono.Android_Tests-Signed > Dependencies**,
+    click **New > Android SDK** next to the **Module SDK**.
+
+    ![New SDK in the Android Studio Project Structure Modules Dependencies window](../../images/android-studio-modules-dependencies.png)
+
+    Select the Android SDK folder you're using with Xamarin.Android, and then
+    under **Build target**, pick the appropriate Android API to match the APK,
+    click **OK**, and then **OK** again.
+
+ 4. If an **Indexing** status message appears at the bottom of the Android
+nip   Studio window, wait for it to complete.
+
+ 5. Start the app, for example by launching it with or without managed debugging
     from Visual Studio, or by tapping the app on the device.
- 3. Select **Run > Attach Debugger to Android Process** (at the bottom of the
-    menu) in Android Studio.
- 4. Set the **Debugger** to **Native**, select the running app, and click
+
+ 6. In Android Studio, select **Run > Attach Debugger to Android Process** (at
+    the bottom of the **Run** menu).
+
+    ![Attach Debugger to Android Process in Android Studio Run menu](../../images/android-studio-attach-debugger.png)
+
+ 7. Set the **Debugger** to **Native**, select the running app, and click
     **OK**.
- 5. Depending on the scenario you are debugging, LLDB might break on some of
-    the runtime signals that Mono uses internally.  If it does, you can set it
-    to continue through those in the **View > Tool Windows > Debug** window,
-    under the **Debugger \[tab] > LLDB \[tab\]** command prompt.
+
+    If the `adb` connection is slow, the first connection to the app will take a
+    while to download all the system libraries.  The connection might time out
+    if this takes too long, but the next connection attempt will have fewer
+    libraries left to download and will likely succeed.
+
+ 8. Depending on the scenario you are debugging, LLDB might break on the signals
+    that Mono uses internally.  If it does, you can set LLDB to continue through
+    those by opening **View > Tool Windows > Debug**, selecting the **Android
+    Native Debugger** tab, and then navigating to the inner **Debugger \[tab\] >
+    LLDB \[tab\]** command prompt, and running the following `process handle`
+    command:
 
         (lldb) process handle -p true -n true -s false SIGXCPU SIG33 SIG35 SIGPWR SIGTTIN SIGTTOU SIGSYS
+
+    ![LLDB process handle command in Android Studio LLDB command prompt](../../images/android-studio-lldb-no-stop-signals.png)
+
+[android-studio]: https://developer.android.com/studio/
 
 ## Adding debug symbols for the default `libmonosgen-2.0`
 
