@@ -129,12 +129,12 @@ it on a particular device.
 
 [android-studio]: https://developer.android.com/studio/
 
-## Adding debug symbols for the default `libmonosgen-2.0`
+## Adding debug symbols for a published `libmonosgen-2.0` version
 
 ### Option A: Add the `libmonosgen-2.0.d.so` with symbols as an `@(AndroidNativeLibrary)`
 
-Note: These steps assume that **Android Options > Use Shared Runtime** is
-enabled in the Visual Studio project property pages.
+This option only works if **Android Options > Use Shared Runtime** is enabled in
+the Visual Studio project property pages.
 
  1. Find the Xamarin.Android version you are debugging on
     <https://github.com/xamarin/xamarin-android/tags>, and click that version to
@@ -174,7 +174,8 @@ enabled in the Visual Studio project property pages.
 
  8. If desired, follow the `image lookup` and `settings set --
     target.source-map` steps from the [Debugging Mono binaries with LLDB
-    guide][lldb-source-map] to allow stepping through the Mono runtime souce.
+    guide][lldb-source-map] to allow stepping through the Mono runtime souce
+    files.
 
 [using-native-libraries]: https://docs.microsoft.com/xamarin/android/platform/native-libraries
 [lldb-source-map]: https://www.mono-project.com/docs/debug+profile/debug/lldb-source-map/
@@ -196,6 +197,7 @@ enabled in the Visual Studio project property pages.
         (lldb) image dump sections libmonosgen-64bit-2.0.so
 
     Look for the row of the table that shows "code" as the "Type":
+
         SectID     Type             Load Address                             Perm File Off.  File Size  Flags      Section Name
         ---------- ---------------- ---------------------------------------  ---- ---------- ---------- ---------- ----------------------------
         0x0000000a code             [0x00000071106c4e80-0x0000007110932674)  r-x  0x0002ee80 0x0026d7f4 0x00000006 libmonosgen-64bit-2.0.so..text
@@ -209,8 +211,9 @@ enabled in the Visual Studio project property pages.
 
 ### Option A: Add the custom `libmonosgen-2.0.so` as an `@(AndroidNativeLibrary)`
 
-Use the same strategy described above for Option A of adding debug symbols.
-In short:
+Use the same strategy described above for Option A of adding debug symbols for a
+published `libmonosgen-2.0` version, but use a custom locally built version of
+`libmonosgen-2.0.so` instead of a prebuilt `libmonosgen-2.0.d.so`.  In short:
 
  1. Add the appropriate architecture of the custom `libmonosgen-2.0.so` to
     the corresponding `lib` subdirectory of the project as described in the
