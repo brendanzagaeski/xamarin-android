@@ -78,13 +78,13 @@ it on a particular device.
     **Profile or debug APK** on the start window or the **File > Profile or
     Debug APK** menu item.
 
-    ![Profile or debug in the Android Studio start window](../../images/android-studio-attach-debugger.png)
+    ![Profile or debug in the Android Studio start window](../images/android-studio-attach-debugger.png)
 
  3. If you skipped the **Android Studio Setup Wizard**, navigate to **File >
     Project Structure > Modules > Mono.Android_Tests-Signed > Dependencies**,
     click **New > Android SDK** next to the **Module SDK**.
 
-    ![New SDK in the Android Studio Project Structure Modules Dependencies window](../../images/android-studio-modules-dependencies.png)
+    ![New SDK in the Android Studio Project Structure Modules Dependencies window](../images/android-studio-modules-dependencies.png)
 
     Select the Android SDK folder you're using with Xamarin.Android, and then
     under **Build target**, pick the appropriate Android API to match the APK,
@@ -99,7 +99,7 @@ nip   Studio window, wait for it to complete.
  6. In Android Studio, select **Run > Attach Debugger to Android Process** (at
     the bottom of the **Run** menu).
 
-    ![Attach Debugger to Android Process in Android Studio Run menu](../../images/android-studio-attach-debugger.png)
+    ![Attach Debugger to Android Process in Android Studio Run menu](../images/android-studio-attach-debugger.png)
 
  7. Set the **Debugger** to **Native**, select the running app, and click
     **OK**.
@@ -118,7 +118,7 @@ nip   Studio window, wait for it to complete.
 
         (lldb) process handle -p true -n true -s false SIGXCPU SIG33 SIG35 SIGPWR SIGTTIN SIGTTOU SIGSYS
 
-    ![LLDB process handle command in Android Studio LLDB command prompt](../../images/android-studio-lldb-no-stop-signals.png)
+    ![LLDB process handle command in Android Studio LLDB command prompt](../images/android-studio-lldb-no-stop-signals.png)
 
 [android-studio]: https://developer.android.com/studio/
 
