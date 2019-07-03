@@ -1,4 +1,4 @@
-# Development tips
+# Development tips and native debugging
 
 Tips and tricks while developing Xamarin.Android.
 
@@ -180,7 +180,30 @@ the Visual Studio project property pages.
 [using-native-libraries]: https://docs.microsoft.com/xamarin/android/platform/native-libraries
 [lldb-source-map]: https://www.mono-project.com/docs/debug+profile/debug/lldb-source-map/
 
-### Option B: Manually load the `libmonosgen-2.0.d.so` with symbols into LLDB
+### Option B: Upload `libmonosgen-2.0.d.so` with symbols to the `.__override__` update directory
+
+ 1. Download and extract the `libmonosgen-2.0.d.so` files as described for
+    Option A.
+
+ 2. Push the appropriate architecture of `libmonosgen-2.0.d.so` into the
+    application's update directory, renaming it to `libmonosgen-2.0.so` along
+    the way:
+
+        $ adb push libmonosgen-2.0.d.so \
+            /data/local/tmp/libmonosgen-2.0.so &&
+          adb shell run-as Mono.Android_Tests cp /data/local/tmp/libmonosgen-2.0.so \
+            /data/data/Mono.Android_Tests/files/.__override__/
+
+ 3. Ensure all users have execute permissions on the application's data
+    directory:
+
+        $ adb shell run-as Mono.Android_Tests \
+            chmod a+x /data/data/Mono.Android_Tests/
+
+    This ensures that LLDB will be able to download `libmonosgen-2.0.so` from
+    the update directory.
+
+### Option C: Manually load the `libmonosgen-2.0.d.so` with symbols into LLDB
 
  1. Download and extract the `libmonosgen-2.0.d.so` files as described for
     Option A.
@@ -211,9 +234,9 @@ the Visual Studio project property pages.
 
 ### Option A: Add the custom `libmonosgen-2.0.so` as an `@(AndroidNativeLibrary)`
 
-Use the same strategy described above for Option A of adding debug symbols for a
-published `libmonosgen-2.0` version, but use a custom locally built version of
-`libmonosgen-2.0.so` instead of a prebuilt `libmonosgen-2.0.d.so`.  In short:
+Use the same strategy described above for *Add the `libmonosgen-2.0.d.so` with
+symbols as an `@(AndroidNativeLibrary)`*, but use a custom locally built version
+of `libmonosgen-2.0.so` instead of a prebuilt `libmonosgen-2.0.d.so`.  In short:
 
  1. Add the appropriate architecture of the custom `libmonosgen-2.0.so` to
     the corresponding `lib` subdirectory of the project as described in the
@@ -226,6 +249,11 @@ published `libmonosgen-2.0` version, but use a custom locally built version of
 
 ### Option B: Use the `.__override__` update directory
 
+Use the same strategy described above for *Upload `libmonosgen-2.0.d.so` with
+symbols to the `.__override__` update directory*, but use a custom locally built
+version of `libmonosgen-2.0.so` instead of a prebuilt `libmonosgen-2.0.d.so`.
+In short:
+
  1. Push the new `libmonosgen-2.0.so` into the application's update directory:
 
         $ adb push libmonosgen-2.0.so \
@@ -233,7 +261,13 @@ published `libmonosgen-2.0` version, but use a custom locally built version of
           adb shell run-as Mono.Android_Tests cp /data/local/tmp/libmonosgen-2.0.so \
             /data/data/Mono.Android_Tests/files/.__override__/
 
- 2. Build, deploy, and run the app, and then attach LLDB.
+ 2. Ensure all users have execute permissions on the application's data
+    directory:
+
+        $ adb shell run-as Mono.Android_Tests \
+            chmod a+x /data/data/Mono.Android_Tests/
+
+ 2. Run the app and attach LLDB.
 
  3. Find the current in-memory address of the `.text` section of the custom
     `libmonosgen-2.0.so`.  For example, for a 64-bit app, run the following
@@ -262,13 +296,66 @@ published `libmonosgen-2.0` version, but use a custom locally built version of
 
         (lldb) image load -f libmonosgen-2.0.so-copy -s 0x00000071106d1000
 
+## Attaching LLDB using mono/lldb-binaries
+
+Download the precompiled `lldb` and `lldb-server` binaries from
+<https://github.com/mono/lldb-binaries/releases>, and follow the instructions
+within [README.md][lldb-readme] on macOS.
+
+[lldb-readme]: https://github.com/mono/lldb-binaries/blob/master/README.md
+
+## Attaching GDB from Visual Studio
+
+ 1. In the Visual Studio Installer, under the **Individual components** tab,
+    ensure that **Development activities > C++ Android development tools** is
+    installed.
+
+ 2. Install the Android NDK if you don't already have it installed.  For
+    example, use **Tools > Android > Android SDK Manager** in Visual Studio to
+    install it.
+
+ 3. Set **Tools > Options > Cross Platform > C++ > Android > Android NDK** to
+    the Android NDK path.  For example, if you installed the Android NDK using the
+    Android SDK Manager in Visual Studio, set the path to:
+
+        C:\Microsoft\AndroidNDK64\android-ndk-r15c
+
+ 4. Quit and relaunch Visual Studio to load the Android NDK path.
+
+ 5. Use **File > Open > Project/Solution** to open the signed debuggable APK for
+    the application.
+
+ 6. Set the **Build > Configuration Manager > Active solution platform** to the
+    application ABI.  If debugging an arm64-v8a application, explicitly add the
+    `ARM64` platform to the solution and set it as the active platform.
+
+ 7. Start the app, for example by launching it with or without managed debugging
+    from Visual Studio, or by tapping the app on the device.
+
+ 8. Select **Debug > Attach to Android process** and wait for the connection to
+    complete.
+
+ 9. If needed, you can use **Debug > Windows > Immediate** to interact with the
+    GDB command line.  Prefix normal GDB commands with `-exec` in the
+    interactive window to get the expected behavior.  For example to view the
+    stack backtrace:
+
+        -exec backtrace
+
+10. Depending on the scenario you are debugging, GDB might break on the signals
+    that Mono uses internally. If it does, you can set GDB to continue through
+    those by opening the Immediate window and running the following `handle`
+    command:
+
+        -exec handle SIGXCPU SIG33 SIG35 SIGPWR SIGTTIN SIGTTOU SIGSYS nostop noprint
+
 ## Attaching GDB by hand
 
-These steps are generally considered deprecated in favor of LLDB as of [GitHub
-PR 1021][pull-1021], but they might be helpful if (a) LLDB shows an unexpected
-behavior, (b) you already have the Android NDK installed, or (c) a customer has
-the Android NDK installed and prefers not to install Android Studio or the
-command line LLDB tools.
+These steps are deprecated in favor of LLDB as of [GitHub PR 1021][pull-1021],
+but they might be helpful if (a) LLDB shows an unexpected behavior, (b) you
+already have the Android NDK installed, or (c) a customer has the Android NDK
+installed and prefers not to install Android Studio or the command line LLDB
+tools.
 
  1. Add the appropriate architecture of `gdbserver` to the application's data
     directory.  For example, if debugging an arm64-v8a app:
