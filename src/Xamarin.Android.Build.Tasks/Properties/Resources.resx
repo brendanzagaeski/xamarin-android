@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -825,5 +825,23 @@ In this message, the term "handheld app" means "app for handheld devices."
   </data>
   <data name="XA5302" xml:space="preserve">
     <value>Two processes may be building this project at once. Lock file exists at path: {0}</value>
+  </data>
+  <data name="XA1029" xml:space="preserve">
+    <value>'{0}' is included in the project under duplicate names, once as '{1}' and once as '{2}'. Remove one of the duplicates to resolve this warning.</value>
+    <comment>{0} - The actual name of the file
+{1} - The first alias name used for the file
+{2} - The second alias name used for the file</comment>
+  </data>
+  <data name="XA1030" xml:space="preserve">
+    <value>'{0}' conflicts with '{1}' because the file names only differ by file extension or capitalization. Please rename or remove one of the files.</value>
+    <comment>{0} - The name of the first file
+{1} - The name of the second file</comment>
+  </data>
+  <data name="XA1031" xml:space="preserve">
+    <value>'{0}' with name '{1}' conflicts with '{2}' with name '{3}' because the names are the same or only differ by file extension or capitalization. Please rename or remove one of the files.</value>
+    <comment>{0} - The actual name of the first file
+{1} - The alias name used for the first file
+{2} - The actual name of the second file
+{3} - The alias name used for the second file</comment>
   </data>
 </root>
