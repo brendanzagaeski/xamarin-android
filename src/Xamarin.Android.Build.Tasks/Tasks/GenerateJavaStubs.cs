@@ -224,11 +224,7 @@ namespace Xamarin.Android.Tasks
 			}
 
 			foreach (var kvp in managedConflicts) {
-				Log.LogCodedWarning (
-					"XA4214",
-					Properties.Resources.XA4214,
-					kvp.Key,
-					string.Join (", ", kvp.Value));
+				Log.LogCodedWarning ("XA4214", Properties.Resources.XA4214, kvp.Key, string.Join (", ", kvp.Value));
 				Log.LogCodedWarning ("XA4214", Properties.Resources.XA4214_Result, kvp.Key, kvp.Value [0]);
 			}
 
