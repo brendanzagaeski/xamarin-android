@@ -226,10 +226,10 @@ namespace Xamarin.Android.Tasks
 			foreach (var kvp in managedConflicts) {
 				Log.LogCodedWarning (
 					"XA4214",
-					Properties.Resources.XA4214A,
+					Properties.Resources.XA4214,
 					kvp.Key,
 					string.Join (", ", kvp.Value));
-				Log.LogCodedWarning ("XA4214", "References to the type `{0}` will refer to `{0}, {1}`.", kvp.Key, kvp.Value [0]);
+				Log.LogCodedWarning ("XA4214", Properties.Resources.XA4214_Result, kvp.Key, kvp.Value [0]);
 			}
 
 			foreach (var kvp in javaConflicts) {

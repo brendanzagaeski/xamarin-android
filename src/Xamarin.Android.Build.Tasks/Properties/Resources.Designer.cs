@@ -63,9 +63,18 @@ namespace Xamarin.Android.Tasks.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The managed type `{0}` exists in multiple assemblies: {1}. Please refactor the managed type names in these assemblies so that they are not identical..
         /// </summary>
-        internal static string XA4214A {
+        internal static string XA4214 {
             get {
-                return ResourceManager.GetString("XA4214A", resourceCulture);
+                return ResourceManager.GetString("XA4214", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to References to the type `{0}` will refer to `{0}, {1}`..
+        /// </summary>
+        internal static string XA4214_Result {
+            get {
+                return ResourceManager.GetString("XA4214_Result", resourceCulture);
             }
         }
     }
