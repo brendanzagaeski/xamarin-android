@@ -156,7 +156,7 @@ namespace Xamarin.Android.Tasks {
 							if (string.IsNullOrEmpty (klass)) {
 								klass = reader.GetAttribute (classSuffix, toolsNamespace);
 								if (string.IsNullOrEmpty (klass)) {
-									Log.LogError ($"Layout file '{fileName}' doesn't have root element with the 'tools:class' attribute or the attribute has invalid value");
+									Log.LogCodedError ("XA4227", Properties.Resources.XA4227, fileName);
 									return false;
 								}
 							}
@@ -237,7 +237,7 @@ namespace Xamarin.Android.Tasks {
 			GetLineInfo (lineInfo, out line, out column);
 
 			if (String.IsNullOrEmpty (id)) {
-				Log.LogWarning ($"Element {e.Name} defined at '{fileName}:({line},{column})' has an empty ID");
+				Log.LogCodedWarning ("XA4228", Properties.Resources.XA4228, e.Name, fileName, line, column);
 				return null;
 			}
 
@@ -258,7 +258,7 @@ namespace Xamarin.Android.Tasks {
 				managedType = managedType.Substring (0, comma).Trim ();
 
 			if (String.IsNullOrEmpty (managedType)) {
-				Log.LogError ($"Unable to determine managed type for element '{e.Name}' defined at '{fileName}:({line},{column})'");
+				Log.LogCodedError ("XA4229", Properties.Resources.XA4229, e.Name, fileName, line, column);
 				return null;
 			}
 
@@ -519,12 +519,12 @@ namespace Xamarin.Android.Tasks {
 		{
 			string codeBehindFile = layoutFile.GetMetadata ("CodeBehindFileName");
 			if (string.IsNullOrEmpty (codeBehindFile)) {
-				Log.LogError ($"Required MetaData 'CodeBehindFileName' for {layoutFile} was not found.");
+				Log.LogCodedError ("XA4224", Properties.Resources.XA4224, layoutFile, "CodeBehindFileName");
 				return null;
 			}
 			string partialClassName = layoutFile.GetMetadata ("ClassName");
 			if (String.IsNullOrEmpty (partialClassName)) {
-				Log.LogError ($"Required MetaData 'ClassName' for {layoutFile} was not found.");
+				Log.LogCodedError ("XA4224", Properties.Resources.XA4224, layoutFile, "ClassName");
 				return null;
 			}
 			int idx = partialClassName.LastIndexOf ('.');
@@ -540,7 +540,7 @@ namespace Xamarin.Android.Tasks {
 			}
 
 			if (String.IsNullOrEmpty (className)) {
-				Log.LogError ($"Layout file {layoutFile.ItemSpec} doesn't specify a valid code-behind class name. It cannot be empty.");
+				Log.LogCodedError ($"Layout file {layoutFile.ItemSpec} doesn't specify a valid code-behind class name. It cannot be empty.");
 				return null;
 			}
 
