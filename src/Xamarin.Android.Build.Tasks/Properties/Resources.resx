@@ -118,8 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="APT0001" xml:space="preserve">
-    <value>Unknown option `{0}`. Please check `$(AndroidAapt2CompileExtraArgs)` and `$(AndroidAapt2LinkExtraArgs)` to see if they include any `aapt` command line arguments that are no longer valid for `aapt2` and ensure that all other arguments are valid for `aapt2`.</value>
-    <comment>The following are literal names and should not be translated: `aapt`, `aapt2`,  `$(AndroidAapt2CompileExtraArgs)`, `$(AndroidAapt2LinkExtraArgs)`
+    <value>Unknown option `{0}`. Please check the `AndroidAapt2CompileExtraArgs` and `AndroidAapt2LinkExtraArgs` MSBuild properties to see if they include any `aapt` command line arguments that are no longer valid for `aapt2` and ensure that all other arguments are valid for `aapt2`.</value>
+    <comment>The following are literal names and should not be translated: `aapt`, `aapt2`,  `AndroidAapt2CompileExtraArgs`, `AndroidAapt2LinkExtraArgs`
 {0} - The invalid option name</comment>
   </data>
   <data name="APT0002" xml:space="preserve">
@@ -131,13 +131,13 @@
     <comment>{0} - The regular expression that the file name must match</comment>
   </data>
   <data name="XA0000_API_for_TargetFrameworkVersion" xml:space="preserve">
-    <value>Could not determine API level for $(TargetFrameworkVersion) of '{0}'.</value>
-    <comment>The following are literal names and should not be translated: $(TargetFrameworkVersion)
-{0} - The current value of $(TargetFrameworkVersion)</comment>
+    <value>Could not determine API level for MSBuild property 'TargetFrameworkVersion' value of '{0}'.</value>
+    <comment>The following are literal names and should not be translated: 'TargetFrameworkVersion'
+{0} - The current value of TargetFrameworkVersion</comment>
   </data>
   <data name="XA0000_API_or_TargetFrameworkVersion_Fail" xml:space="preserve">
-    <value>Could not determine $(AndroidApiLevel) or $(TargetFrameworkVersion); should not be reached.</value>
-    <comment>The following are literal names and should not be translated: $(AndroidApiLevel), $(TargetFrameworkVersion)
+    <value>Could not validate 'AndroidApiLevel' or 'TargetFrameworkVersion' MSBuild property values; should not be reached.</value>
+    <comment>The following are literal names and should not be translated: 'AndroidApiLevel', 'TargetFrameworkVersion'
 In this message, the phrase "should not be reached" means that this error message is not expected to appear in normal usage.</comment>
   </data>
   <data name="XA0000_Exception" xml:space="preserve">
@@ -145,7 +145,7 @@ In this message, the phrase "should not be reached" means that this error messag
     <comment>{0} - The exception message of the associated exception</comment>
   </data>
   <data name="XA0000_TargetFrameworkVersion_for_API" xml:space="preserve">
-    <value>Could not determine $(TargetFrameworkVersion) for API level '{0}.'</value>
+    <value>Could not determine target framework version for API level '{0}.'</value>
     <comment>The following are literal names and should not be translated: $(TargetFrameworkVersion)
 {0} - The API level number</comment>
   </data>
