@@ -18,6 +18,7 @@
     <BuildDependsOn>
       _CopyNDKTools;
       _GenerateXACommonProps;
+      _AssignOutputLinkMetadata;
       $(BuildDependsOn);
       _CopyExtractedMultiDexJar;
       _BuildMonoScripts;
@@ -31,25 +32,25 @@
   <ItemGroup>
     <None Include="MSBuild\Novell\Novell.MonoDroid.Common.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>..\..\Novell\Novell.MonoDroid.Common.targets</Link>
+      <_OutputLink>..\..\Novell\Novell.MonoDroid.Common.targets</_OutputLink>
     </None>
     <None Include="MSBuild\Novell\Novell.MonoDroid.CSharp.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>..\..\Novell\Novell.MonoDroid.CSharp.targets</Link>
+      <_OutputLink>..\..\Novell\Novell.MonoDroid.CSharp.targets</_OutputLink>
     </None>
     <None Include="MSBuild\Novell\MonoDroid.FSharp.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>..\..\Novell\MonoDroid.FSharp.targets</Link>
+      <_OutputLink>..\..\Novell\MonoDroid.FSharp.targets</_OutputLink>
     </None>
     <None
         Include="MSBuild\Xamarin\Xamarin.Android.Sdk.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>..\Xamarin.Android.Sdk.props</Link>
+      <_OutputLink>..\Xamarin.Android.Sdk.props</_OutputLink>
     </None>
     <None
         Include="MSBuild\Xamarin\Xamarin.Android.Sdk.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>..\Xamarin.Android.Sdk.targets</Link>
+      <_OutputLink>..\Xamarin.Android.Sdk.targets</_OutputLink>
     </None>
     <None
         Include="MSBuild\Xamarin\Android\Xamarin.Android.Bindings.Before.targets">
@@ -297,6 +298,13 @@
         Overwrite="false"/>
     <ItemGroup>
       <FileWrites Include="$(_GeneratedProfileClass)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="_AssignOutputLinkMetadata">
+    <ItemGroup>
+      <None Condition=" '%(None._OutputLink)' != '' ">
+        <Link>%(None._OutputLink)</Link>
+      </None>
     </ItemGroup>
   </Target>
 
