@@ -24,11 +24,25 @@ namespace MonoDroid.Tuner
 			if (!(assembly.MainModule.HasTypeReference ("Java.Lang.Object") || assembly.MainModule.Name == "Mono.Android.dll"))
 				return false;
 			bool changed = false;
-			foreach (TypeDefinition type in assembly.MainModule.Types) {
+			List<TypeDefinition> types = assembly.MainModule.Types.ToList ();
+			foreach (TypeDefinition type in assembly.MainModule.Types)
+				AddNestedTypes (types, type);
+			foreach (TypeDefinition type in types)
 				if (MightNeedFix (type))
 					changed |= AddKeepAlives (type);
-			}
 			return changed;
+		}
+
+		// Adapted from https://github.com/xamarin/xamarin-android/blob/885b57bdcf32e559961b183e1537844c5aa8143e/src/Xamarin.Android.Build.Tasks/Linker/MonoDroid.Tuner/MarkJavaObjects.cs
+		static void AddNestedTypes (List<TypeDefinition> types, TypeDefinition type)
+		{
+			if (!type.HasNestedTypes)
+				return;
+
+			foreach (var t in type.NestedTypes) {
+				types.Add (t);
+				AddNestedTypes (types, t);
+			}
 		}
 
 		// Copied from https://github.com/xamarin/xamarin-android/blob/885b57bdcf32e559961b183e1537844c5aa8143e/src/Xamarin.Android.Build.Tasks/Linker/MonoDroid.Tuner/FixAbstractMethodsStep.cs#L104-L107
