@@ -20,8 +20,8 @@ namespace MonoDroid.Tuner
 		// Adapted from https://github.com/xamarin/xamarin-android/blob/885b57bdcf32e559961b183e1537844c5aa8143e/src/Xamarin.Android.Build.Tasks/Linker/MonoDroid.Tuner/FixAbstractMethodsStep.cs#L86-L97
 		internal bool AddKeepAlives (AssemblyDefinition assembly)
 		{
-			// This will skip Mono.Android.dll because Java.Lang.Object is defined in Mono.Android.dll rather than referenced from it.
-			if (!assembly.MainModule.HasTypeReference ("Java.Lang.Object"))
+			// Java.Lang.Object is defined in Mono.Android.dll, so that assembly needs to be special-cased.
+			if (!(assembly.MainModule.HasTypeReference ("Java.Lang.Object") || assembly.MainModule.Name == "Mono.Android.dll"))
 				return false;
 			bool changed = false;
 			foreach (TypeDefinition type in assembly.MainModule.Types) {
