@@ -1,4 +1,4 @@
-// Based on src/Xamarin.Android.Build.Tasks/Tasks/LinkAssembliesNoShrink.cs
+// Based on https://github.com/xamarin/xamarin-android/blob/885b57bdcf32e559961b183e1537844c5aa8143e/src/Xamarin.Android.Build.Tasks/Tasks/LinkAssembliesNoShrink.cs
 
 using System;
 using System.Diagnostics;

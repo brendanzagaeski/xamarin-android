@@ -1,4 +1,4 @@
-// Adapted from src/Xamarin.Android.Build.Tasks/Utilities/MonoAndroidHelper.cs
+// Adapted from https://github.com/xamarin/xamarin-android/blob/885b57bdcf32e559961b183e1537844c5aa8143e/src/Xamarin.Android.Build.Tasks/Utilities/MonoAndroidHelper.cs
 
 using System;
 using System.IO;

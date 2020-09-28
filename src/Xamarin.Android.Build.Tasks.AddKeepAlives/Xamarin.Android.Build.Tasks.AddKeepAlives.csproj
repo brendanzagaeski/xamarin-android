@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\Configuration.props" />
   <Import Project="..\..\build-tools\scripts\MSBuildReferences.projitems" />
@@ -10,6 +10,7 @@
     <OutputPath>$(XamarinAndroidSourcePath)bin\$(Configuration)\$(AssemblyName)\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
+    <PackageVersion>0.0.0</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
