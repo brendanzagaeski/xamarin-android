@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Configuration.props" />
+  <Import Project="..\..\build-tools\scripts\MSBuildReferences.projitems" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Xamarin.Android.Tasks</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>$(XamarinAndroidSourcePath)bin\$(Configuration)\$(AssemblyName)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Xamarin.Android.Cecil">
+      <HintPath>..\..\bin\$(Configuration)\lib\xamarin.android\xbuild\Xamarin\Android\Xamarin.Android.Cecil.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- All of the required assemblies are already brought in for
+         `Xamarin.Android.Build.Tasks.dll` during the actual build process, so
+         mark them all as `%(PrivateAssets)`=`all` for this NuGet package. -->
+    <PackageReference Update="Microsoft.Build" PrivateAssets="all" />
+    <PackageReference Update="Microsoft.Build.Framework" PrivateAssets="all" />
+    <PackageReference Update="Microsoft.Build.Tasks.Core" PrivateAssets="all" />
+    <PackageReference Update="Microsoft.Build.Utilities.Core" PrivateAssets="all" />
+    <PackageReference Update="System.Buffers" PrivateAssets="all" />
+    <PackageReference Update="System.Collections.Immutable" PrivateAssets="all" />
+    <PackageReference Update="System.Numerics.Vectors" PrivateAssets="all" />
+    <PackageReference Update="System.Runtime.CompilerServices.Unsafe" PrivateAssets="all" />
+    <PackageReference Update="System.ValueTuple" PrivateAssets="all" />
+    <PackageReference Update="Xamarin.Build.AsyncTask" PrivateAssets="all" />
+    <PackageReference Update="Xamarin.LibZipSharp" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\external\Java.Interop\src\Java.Interop.Tools.Cecil\Java.Interop.Tools.Cecil.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\external\Java.Interop\src\Java.Interop.Tools.JavaCallableWrappers\Java.Interop.Tools.JavaCallableWrappers.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Xamarin.Android.Build.Tasks.AddKeepAlives.targets" Pack="true" PackagePath="build\$(TargetFramework)" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="Xamarin.Android.Tasks.AddKeepAlives" AssemblyFile="$(MSBuildThisFileDirectory)Xamarin.Android.Build.Tasks.AddKeepAlives.dll" />
+
+  <PropertyGroup>
+    <AfterGenerateAndroidManifest>
+      $(AfterGenerateAndroidManifest);
+      _AddKeepAlives;
+    </AfterGenerateAndroidManifest>
+    <_AndroidAddKeepAlivesFlag>$(IntermediateOutputPath)keepalives.flag</_AndroidAddKeepAlivesFlag>
+  </PropertyGroup>
+  <Target Name="_AddKeepAlives"
+    Condition=" '$(Configuration)' == 'Release' or '$(AndroidAddKeepAlives)' == 'true' "
+    Inputs="@(_ResolvedAssemblies)"
+    Outputs="$(_AndroidAddKeepAlivesFlag)" >
+    <AddKeepAlives
+      ResolvedAssemblies="@(_ResolvedAssemblies)"
+      SourceFiles="@(_ResolvedAssemblies)"
+      DestinationFiles="@(_ResolvedAssemblies)"
+      Deterministic="$(Deterministic)" />
+    <Touch Files="$(_AndroidAddKeepAlivesFlag)" AlwaysCreate="true" />
+    <ItemGroup>
+      <FileWrites Include="$(_AndroidAddKeepAlivesFlag)" />
+    </ItemGroup>
+  </Target>
+
+</Project>
