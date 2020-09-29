@@ -23,15 +23,18 @@ from Java.Interop, this build task is no longer needed.
 
 ## Usage instructions
 
-1. Build the NuGet package, for example by running the following command in the
-   top level of the cloned repository:
+1. Either download the prebuilt NuGet package from the files in this directory
+   on GitHub or build the NuGet package into the
+   _bin\$(Configuration)\Xamarin.Android.Build.Tasks.AddKeepAlives_ directory in
+   a local clone of the repository, for example by running the following command
+   in the top level of the repository:
 
    ```cmd
-   msbuild -restore -t:Pack
+   msbuild -restore -t:Pack src\Xamarin.Android.Build.Tasks.AddKeepAlives\Xamarin.Android.Build.Tasks.AddKeepAlives.csproj
    ```
 
 2. Install the resulting NuGet package from
-   _bin\Debug\Xamarin.Android.Build.Tasks.AddKeepAlives.0.0.0.nupkg_ into the
+   _bin\Debug\Xamarin.Android.Build.Tasks.AddKeepAlives.0.0.1.nupkg_ into the
    target Xamarin.Android app project.
 
 3. Build the Xamarin.Android app project in the Release configuration, or set
