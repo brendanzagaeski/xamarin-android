@@ -33,9 +33,7 @@ from Java.Interop, this build task is no longer needed.
    msbuild -restore -t:Pack src\Xamarin.Android.Build.Tasks.AddKeepAlives\Xamarin.Android.Build.Tasks.AddKeepAlives.csproj
    ```
 
-2. Install the resulting NuGet package from
-   _bin\Debug\Xamarin.Android.Build.Tasks.AddKeepAlives.0.0.1.nupkg_ into the
-   target Xamarin.Android app project.
+2. Install the NuGet package into the target Xamarin.Android app project.
 
 3. Build the Xamarin.Android app project in the Release configuration, or set
    the `AndroidAddKeepAlives` MSBuild property to `true`.
