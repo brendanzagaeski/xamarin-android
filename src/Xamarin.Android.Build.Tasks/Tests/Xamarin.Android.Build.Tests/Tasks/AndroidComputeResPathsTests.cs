@@ -285,5 +285,38 @@ namespace Xamarin.Android.Build.Tests {
 				Environment.CurrentDirectory = previousWorking;
 			}
 		}
+
+		[Test]
+		public void ManyResourceFiles ()
+		{
+			var projectDir = Path.Combine (Root, "temp", $"{nameof (ManyResourceFiles)}");
+			TestOutputDirectories [TestContext.CurrentContext.Test.ID] = projectDir;
+
+			var items = new List<ITaskItem> (10000);
+			var random = new System.Random (120398);
+			for (var i = 0; i < 10000; i++) {
+				char a = (char) (((int) 'A') + (random.Next (26)) + (32 * i % 2));
+				var identity = $"resource{i}{a}";
+				items.Add (new TaskItem (identity));
+				var path = Path.Combine (projectDir, identity);
+				Directory.CreateDirectory (Path.GetDirectoryName (path));
+				File.WriteAllText (path, contents: "");
+			}
+			var item = items.ToArray ();
+
+			var intermediateDir = Path.Combine (projectDir, "obj", "Debug", "res");
+			Directory.CreateDirectory (intermediateDir);
+
+			var task = new AndroidComputeResPaths {
+				BuildEngine = engine,
+				ResourceFiles = items.ToArray (),
+				IntermediateDir = intermediateDir,
+				LowercaseFilenames = true
+			};
+
+			var stopwatch = System.Diagnostics.Stopwatch.StartNew ();
+			task.Execute ();
+			Assert.Fail (stopwatch.Elapsed.TotalMilliseconds.ToString ());
+		}
 	}
 }
